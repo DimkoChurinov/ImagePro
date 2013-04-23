@@ -55,7 +55,16 @@
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
-    <widget class="QMenu" name="menu_Filters">
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="actionZoom_In"/>
+    <addaction name="actionZoom_Out"/>
+    <addaction name="actionNormal_size"/>
+    <addaction name="actionFit_to_window"/>
+   </widget>
+   <widget class="QMenu" name="menu_Filters">
     <property name="title">
      <string>F&amp;ilters</string>
     </property>

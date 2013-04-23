@@ -103,3 +103,14 @@ private:
   Apertures m_apertures;
   QString   m_currentFilter;
 };
+
+class FilterSobel : public Filter {
+public :  
+  virtual void Apply(const QImage &imageSrc, QImage &imageDest) const;
+};
+
+class FilterRoberts : public Filter {
+public :  
+  virtual void Apply(const QImage &imageSrc, QImage &imageDest) const;
+};
+

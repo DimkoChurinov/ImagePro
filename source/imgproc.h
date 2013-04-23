@@ -20,13 +20,18 @@ private:
   void updateActions();
   void scaleImage(double factor);
   void adjustScrollBar(QScrollBar *scrollBar, double factor);
- 
+  void wheelEvent(QWheelEvent *event);
+
   void createActionsUI( Ui::imgprocClass &ui );
   void loadFilters();
 
 private slots:
   void open();
   void save();
+  void zoomIn();
+  void zoomOut();
+  void normalSize();
+  void fitToWindow();
   void showAbout();
   void redo();
   void undo();

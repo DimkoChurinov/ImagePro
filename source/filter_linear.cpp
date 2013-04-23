@@ -282,3 +282,74 @@ void FilterLinear5x5::Rename( QString const&oldName, QString const&newName )
   Remove(oldName);
   Apply(newName, data);
 }
+
+void FilterSobel::Apply (const QImage &imageSrc, QImage &imageDest) const
+{
+  int sx = imageSrc.width(),
+      sy = imageSrc.height();
+  int bpl = imageSrc.bytesPerLine();
+  const uchar *src = imageSrc.constBits();
+  uchar       *dest = imageDest.bits();
+  int g1[] = {-1, 0, +1, -2, 0, +2, -1, 0, +1};
+  int g2[] = {-1, -2, -1, 0, 0, 0, +1, +2, +1};
+
+  for (int y = 0; y < sy; y++) {
+    for (int x = 0; x < sx; x++) {
+      for (int c = 0; c < 3; c++) {
+        int accum1 = 0, accum2 = 0;
+        for (int j = -1; j <= 1; j++) {
+          for (int i = -1; i <= 1; i++) {
+            int xx = x + i;
+            int yy = y + j;
+            if (xx < 0) { xx += sx; }
+            if (xx >= sx) { xx -= sx; }
+            if (yy < 0) { yy += sy; }
+            if (yy >= sy) { yy -= sy; }
+            accum1 += src[yy * bpl + (xx << 2) + c] * 
+                      g1[(j + 1) * 3 + i + 1];
+            accum2 += src[yy * bpl + (xx << 2) + c] * 
+                      g2[(j + 1) * 3 + i + 1];
+          }
+        }
+        int accum = (int)sqrt((double)accum1 * accum1 + accum2 * accum2);
+        accum = clamp(accum, 0, 255);
+        dest[y * bpl + (x << 2) + c] = accum;
+      }
+    }
+  }
+}
+
+void FilterRoberts::Apply (const QImage &imageSrc, QImage &imageDest) const
+{
+  int sx = imageSrc.width(),
+    sy = imageSrc.height();
+  int bpl = imageSrc.bytesPerLine();
+  const uchar *src = imageSrc.constBits();
+  uchar       *dest = imageDest.bits();
+  int g1[] = {+1, 0, 0, -1};
+  int g2[] = {0, +1, -1, 0};
+
+  for (int y = 0; y < sy; y++) {
+    for (int x = 0; x < sx; x++) {
+      for (int c = 0; c < 3; c++) {
+        int accum1 = 0, accum2 = 0;
+        for (int j = 0; j <= 1; j++) {
+          for (int i = 0; i <= 1; i++) {
+            int xx = x + i;
+            int yy = y + j;
+            if (xx >= sx) { xx -= sx; }
+            if (yy >= sy) { yy -= sy; }
+            accum1 += src[yy * bpl + (xx << 2) + c] * 
+              g1[(j << 1) + i];
+            accum2 += src[yy * bpl + (xx << 2) + c] * 
+              g2[(j << 1) + i];
+          }
+        }
+        int accum = (int)sqrt((double)accum1 * accum1 + accum2 * accum2);
+        accum = clamp(accum, 0, 255);
+        dest[y * bpl + (x << 2) + c] = accum;
+      }
+    }
+  }
+
+}
